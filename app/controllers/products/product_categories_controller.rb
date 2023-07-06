@@ -2,13 +2,14 @@ class Products::ProductCategoriesController < ApplicationController
   include ActionController::MimeResponds
   respond_to :json
 
-  def new
-    @product_category = Products::ProductCategory.new
+  def index
+    @product_categories = Products::ProductCategories.all
+    render json: { product_categories: @product_categories }
   end
 
   def create
-    @product_category = Products::ProductCategory.new(product_categories_params)
-    if @product_category.save
+    @product_categories = Products::ProductCategories.new(product_categories_params)
+    if @product_categories.save
       render json: { status: "success"}
     else
       render json: { status: "failed"}
@@ -16,14 +17,14 @@ class Products::ProductCategoriesController < ApplicationController
   end
 
   def show
-    @product_category = Products::ProductCategory.find(params[:id])
-    render json: {data: @product_category}
+    @product_categories = Products::ProductCategories.find(params[:id])
+    render json: {data: @product_categories}
   end
 
   def update
-    @product_category = Products::ProductCategory.find(params[:id])
+    @product_categories = Products::ProductCategories.find(params[:id])
 
-    if @product_category.update(product_categories_params)
+    if @product_categories.update(product_categories_params)
       # Handle successful update
       render json: {status: 'Product category was successfully updated.'}
     else
@@ -33,9 +34,9 @@ class Products::ProductCategoriesController < ApplicationController
   end
 
   def destroy
-    @product_category = Products::ProductCategory.find(params[:id])
+    @product_categories = Products::ProductCategories.find(params[:id])
 
-    if @product_category.destroy
+    if @product_categories.destroy
       render json: {status: "Delete Success"}
     else
       render json: {status: "Delete Failed"}
@@ -46,6 +47,6 @@ class Products::ProductCategoriesController < ApplicationController
   private
 
   def product_categories_params
-    params.require(:product_category).permit(:category)
+    params.require(:product_categories).permit(:category)
   end
 end
