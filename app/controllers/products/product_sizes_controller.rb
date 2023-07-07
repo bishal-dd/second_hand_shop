@@ -3,13 +3,13 @@ class Products::ProductSizesController < ApplicationController
   respond_to :json
 
   def index
-    @product_sizes = Products::ProductSizes.all
+    @product_sizes = Products::ProductSize.all
     render json: {product_sizes: @product_sizes}
   end
 
 
   def create
-    @product_sizes = Products::ProductSizes.new(product_sizes_params)
+    @product_sizes = Products::ProductSize.new(product_sizes_params)
     if @product_sizes.save
       render json: { status: "success"}
     else
@@ -18,12 +18,12 @@ class Products::ProductSizesController < ApplicationController
   end
 
   def show
-    @product_sizes = Products::ProductSizes.find(params[:id])
+    @product_sizes = Products::ProductSize.find(params[:id])
     render json: {data: @product_sizes}
   end
 
   def update
-    @product_sizes = Products::ProductSizes.find(params[:id])
+    @product_sizes = Products::ProductSize.find(params[:id])
 
     if @product_sizes.update(product_sizes_params)
       # Handle successful update
@@ -35,7 +35,7 @@ class Products::ProductSizesController < ApplicationController
   end
 
   def destroy
-    @product_sizes = Products::ProductSizes.find(params[:id])
+    @product_sizes = Products::ProductSize.find(params[:id])
 
     if @product_sizes.destroy
       render json: {status: "Delete Success"}

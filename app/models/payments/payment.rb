@@ -1,4 +1,6 @@
 class Payments::Payment < ApplicationRecord
-  belongs_to :user
-  belongs_to :products
+  self.table_name = 'payments'
+  belongs_to :user, class_name: 'User', foreign_key: 'user_id'
+  belongs_to :product, class_name: 'Products::Product', foreign_key: 'product_id'
+
 end

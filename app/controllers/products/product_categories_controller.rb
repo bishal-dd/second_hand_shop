@@ -3,12 +3,12 @@ class Products::ProductCategoriesController < ApplicationController
   respond_to :json
 
   def index
-    @product_categories = Products::ProductCategories.all
+    @product_categories = Products::ProductCategory.all
     render json: { product_categories: @product_categories }
   end
 
   def create
-    @product_categories = Products::ProductCategories.new(product_categories_params)
+    @product_categories = Products::ProductCategory.new(product_categories_params)
     if @product_categories.save
       render json: { status: "success"}
     else
@@ -17,12 +17,12 @@ class Products::ProductCategoriesController < ApplicationController
   end
 
   def show
-    @product_categories = Products::ProductCategories.find(params[:id])
+    @product_categories = Products::ProductCategory.find(params[:id])
     render json: {data: @product_categories}
   end
 
   def update
-    @product_categories = Products::ProductCategories.find(params[:id])
+    @product_categories = Products::ProductCategory.find(params[:id])
 
     if @product_categories.update(product_categories_params)
       # Handle successful update
@@ -34,7 +34,7 @@ class Products::ProductCategoriesController < ApplicationController
   end
 
   def destroy
-    @product_categories = Products::ProductCategories.find(params[:id])
+    @product_categories = Products::ProductCategory.find(params[:id])
 
     if @product_categories.destroy
       render json: {status: "Delete Success"}

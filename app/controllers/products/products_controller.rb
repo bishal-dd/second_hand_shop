@@ -5,8 +5,8 @@ class Products::ProductsController < ApplicationController
     name = params[:name]
     category = params[:category]
 
-    @products = Products::Products
-                  .joins(:product_categories, :product_sizes)
+    @products = Products::Product
+                  .joins(:product_category, :product_size)
                   .select('products.id, products.name, products.price, products.pickup_location, products.status, product_categories.category, product_sizes.size')
 
     # Filter the products by name if it is provided
@@ -32,10 +32,10 @@ class Products::ProductsController < ApplicationController
 
   def create
     # Retrieve the relevant data from their respective tables
-    product_category = Products::ProductCategories.find_by(category: params[:category])
-    product_size = Products::ProductSizes.find_by(size: params[:size])
+    product_category = Products::ProductCategory.find_by(category: params[:category])
+    product_size = Products::ProductSize.find_by(size: params[:size])
     # Create the product with the matched IDs
-    @product = Products::Products.new(product_params)
+    @product = Products::Product.new(product_params)
     @product.product_categories_id = product_category.id if product_category
     @product.product_sizes_id = product_size.id if product_size
 
@@ -52,7 +52,7 @@ class Products::ProductsController < ApplicationController
   end
 
   def show
-    @product = Products::Products.find(params[:id])
+    @product = Products::Product.find(params[:id])
 
     product = @product.attributes
     if @product.image.attached?
@@ -66,8 +66,8 @@ class Products::ProductsController < ApplicationController
     user_id = params[:user_id]
     status = params[:status]
 
-    @user_products = Products::Products
-                       .joins(:product_categories, :product_sizes)
+    @user_products = Products::Product
+                       .joins(:product_category, :product_size)
                        .where(user_id: user_id)
                        .select('products.id, products.name, products.price, products.pickup_location, products.status, product_categories.category, product_sizes.size')
 
@@ -89,7 +89,7 @@ class Products::ProductsController < ApplicationController
 
 
   def destroy
-    @product = Products::Products.find(params[:id])
+    @product = Products::Product.find(params[:id])
     if @product.destroy
       render json: { status: "delete success" }
     else
@@ -98,11 +98,11 @@ class Products::ProductsController < ApplicationController
   end
 
   def update
-    @product = Products::Products.find(params[:id])
+    @product = Products::Product.find(params[:id])
 
     # Retrieve the relevant data from their respective tables
-    product_category = Products::ProductCategories.find_by(category: params[:category])
-    product_size = Products::ProductSizes.find_by(size: params[:size])
+    product_category = Products::ProductCategory.find_by(category: params[:category])
+    product_size = Products::ProductSize.find_by(size: params[:size])
 
     # Update the product with the matched IDs
     @product.product_categories_id = product_category.id if product_category

@@ -12,4 +12,10 @@ Rails.application.routes.draw do
     get '/', to: 'products#index'
     get '/user_products/:user_id', to: 'products#user_products'
   end
+
+  namespace :payments do
+    post '/:id', to: 'payments#payment'
+    put '/approval/:id', to: 'payments#payment_approval'
+    get '/:product_id', to:'payments#index'
+  end
 end
