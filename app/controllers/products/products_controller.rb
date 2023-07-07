@@ -52,9 +52,16 @@ class Products::ProductsController < ApplicationController
   end
 
   def show
-    @product =  Products::Products.find(params[:id])
-    render json: {product: @product}
+    @product = Products::Products.find(params[:id])
+
+    product = @product.attributes
+    if @product.image.attached?
+      product['image_url'] = url_for(@product.image)
+    end
+
+    render json: { product: product}
   end
+
   def user_products
     user_id = params[:user_id]
     status = params[:status]
