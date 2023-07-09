@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   namespace :payments do
     post '/:id', to: 'payments#payment'
     put '/approval/:id', to: 'payments#payment_approval'
-    get '/:product_id', to:'payments#index'
+    get '/:id', to:'payments#index'
+    get '/earnings/:user_id', to: 'payments#total_payment_amount'
   end
 end

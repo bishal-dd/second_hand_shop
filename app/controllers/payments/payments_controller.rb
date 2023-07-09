@@ -2,10 +2,21 @@ require 'pry'
 class Payments::PaymentsController < ApplicationController
 
   def index
-    product_id = params[:product_id]
-    @payments = Payments::Payment.joins(product: :user).where(products: { id: product_id }, status: 0)
-    render json: { payments: @payments }
+    user = User.find(params[:id])
+    products = Products::Product.where(user_id: user.id)
+
+    if products.empty?
+      render json: { error: "No products found for the user" }, status: :not_found
+      return
+    end
+
+    product_ids = products.pluck(:id)
+    @payments= Payments::Payment.where(product_id: product_ids).joins(:product).select('payments.id, payments.amount, payments.jrnl_no, products.name, products.price  ')
+
+    render json: { payments_and_product: @payments}
   end
+
+
   def payment
     product = Products::Product.find(params[:id])
     payment_amount = product.price
@@ -24,13 +35,23 @@ class Payments::PaymentsController < ApplicationController
   def payment_approval
     payment = Payments::Payment.find(params[:id])
     payment.status = 1
-
-    if payment.save
+    product = Products::Product.find(payment.product_id) # Assuming there is a foreign key association between Payment and Product
+    product.status = 1 # Assuming there is a 'status' attribute in the Product model
+    if payment.save && product.save
       render json: { status: "success" }
     else
-      render json: { status: "failed", errors: payment.errors.full_messages }
+      render json: { status: "failed", errors: [payment.errors.full_messages, product.errors.full_messages].flatten }
     end
   end
+
+  def total_payment_amount
+    user = User.find(params[:user_id])
+    payment = Payments::Payment.where(user_id: user.id)
+    total_amount = payment.sum(:amount)
+    render json: { total_amount: total_amount }
+  end
+
+
   private
 
   def payment_params
