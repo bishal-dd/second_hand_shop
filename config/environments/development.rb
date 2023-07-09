@@ -7,6 +7,7 @@ Rails.application.configure do
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
+  config.action_mailer.default_url_options = { host: 'https://localhost:3000' }
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -52,6 +53,17 @@ Rails.application.configure do
 
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
+
+  # Configure Action Mailer to use Gmail SMTP
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: 'smtp.gmail.com',
+    port: 587,
+    user_name: 'dhakalbishal930@gmail.com',
+    password: 'wweisbest1234@',
+    authentication: 'plain',
+    enable_starttls_auto: true
+  }
 
 
   # Raises error for missing translations.

@@ -1,13 +1,10 @@
-# frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
   include Common
   include ActionController::MimeResponds
   skip_before_action :verify_signed_out_user, only: :destroy
   skip_before_action :verify_authenticity_token
 
-
-  respond_to :json
+  before_action :set_devise_mapping, only: [:current_user]
 
   def create
     self.resource = warden.authenticate!(auth_options)
@@ -20,17 +17,17 @@ class Users::SessionsController < Devise::SessionsController
     render json: { status: "success", message: "Signed out successfully" }
   end
 
-  def current_user
-    if user_signed_in?
-      user = current_user
-      render json: { user: user }
-    else
-      render json: { error: "User not signed in" }, status: :unauthorized
-    end
-  end
+
+
   private
 
   def sign_in_params
     params.require(:user).permit(:email, :password)
   end
+
+  def set_devise_mapping
+    request.env['devise.mapping'] = Devise.mappings[:user]
+  end
+
+  # Override respond_to to explicitly specify JSON format
 end
