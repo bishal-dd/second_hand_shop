@@ -26,5 +26,9 @@ Rails.application.routes.draw do
   # Move this route outside the devise_scope block
   get '/current_user', to: 'users/current_user#fetch_current_user'
 
-  resources :accounts
-end
+  resources :accounts, except: [:create, :index] do
+    post '/:id', to: 'accounts#create', on: :collection, as: :create
+    get '/:id', to: 'accounts#index', on: :collection, as: :index
+
+  end
+  end

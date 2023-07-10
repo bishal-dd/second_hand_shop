@@ -1,26 +1,22 @@
 class AccountsController < ApplicationController
-  before_action :set_account, :authenticate_admin!, except: [:index], only: %i[ show update destroy ]
+  before_action  :authenticate_user!
   skip_before_action :verify_authenticity_token
 
 
   # GET /accounts
   def index
-    @accounts = Account.all
+    @account = Account.find_by(user_id: params[:id])
 
-    account = @accounts.first
-
-    if account
-      account_attributes = account.attributes
-      if account.image.attached?
-        account_attributes['image_url'] = url_for(account.image)
+    if @account
+      account_attributes = @account.attributes
+      if @account.image.attached?
+        account_attributes['image_url'] = url_for(@account.image) if @account.image.present?
       end
     else
       account_attributes = {}
     end
-
     render json: { account: account_attributes }
   end
-
 
 
   # GET /accounts/1
@@ -37,23 +33,33 @@ class AccountsController < ApplicationController
 
   # POST /accounts
   def create
-    @account = Account.new(account_params)
+    @account = Account.find_by(user_id: params[:id])
 
+    if @account
+      render json: { status: "failed", message: "Account already uploaded" }
+      return
+    end
+
+    @account = Account.new(account_params)
+    @account.user_id = params[:id]
     uploaded_image = params[:image]
+
     if uploaded_image
       @account.image.attach(uploaded_image)
     end
 
     if @account.save
-      render json: { status: "success"}
+      render json: { status: "success" }
     else
-      render json: { status: "failed"}
+      render json: { status: "failed" }
     end
   end
 
-  # PATCH/PUT /accounts/1
+
+
+  # PATCH/PUT /accounts/1  # PATCH/PUT /accounts/1
   def update
-    @account = Account.find(params[:id])
+    @account = Account.find_by(user_id: params[:id])
 
     if @account.update(account_params)
       uploaded_image = params[:image]
@@ -67,6 +73,9 @@ class AccountsController < ApplicationController
   end
 
 
+
+
+
   # DELETE /accounts/1
   def destroy
     @account = Account.find(params[:id])
@@ -78,10 +87,6 @@ class AccountsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_account
-      @account = Account.find(params[:id])
-    end
 
     # Only allow a list of trusted parameters through.
     def account_params

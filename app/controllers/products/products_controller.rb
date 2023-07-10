@@ -17,8 +17,8 @@ class Products::ProductsController < ApplicationController
     end
 
     # Filter the products by category if it is provided
-    if params[:category].present?
-      @products = @products.where("product_categories.category = ?", params[:category])
+    if category.present?
+      @products = @products.where("product_categories.category = ?", category)
     end
 
     products_with_image_data = @products.map do |product|
@@ -31,6 +31,7 @@ class Products::ProductsController < ApplicationController
 
     render json: { products: products_with_image_data }
   end
+
 
   def create
     # Retrieve the relevant data from their respective tables
