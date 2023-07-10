@@ -1,4 +1,6 @@
 class Products::ProductSizesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_admin!, except: [:index]
   include ActionController::MimeResponds
   respond_to :json
 
@@ -48,6 +50,6 @@ class Products::ProductSizesController < ApplicationController
   private
 
   def product_sizes_params
-    params.require(:product_sizes).permit(:size)
+    params.require(:product_size).permit(:size)
   end
 end

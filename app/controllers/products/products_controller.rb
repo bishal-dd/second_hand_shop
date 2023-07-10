@@ -1,4 +1,6 @@
 class Products::ProductsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!, except: [:index, :show]
   include ActionController::MimeResponds
   respond_to :json
   def index

@@ -1,6 +1,7 @@
 require 'pry'
 class Payments::PaymentsController < ApplicationController
-
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!
   def index
     user = User.find(params[:id])
     products = Products::Product.where(user_id: user.id)

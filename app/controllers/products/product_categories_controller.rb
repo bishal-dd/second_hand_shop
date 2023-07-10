@@ -1,4 +1,7 @@
+require 'pry'
 class Products::ProductCategoriesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_admin!, except: [:index]
   include ActionController::MimeResponds
   respond_to :json
 
@@ -45,6 +48,7 @@ class Products::ProductCategoriesController < ApplicationController
 
 
   private
+
 
   def product_categories_params
     params.require(:product_categories).permit(:category)

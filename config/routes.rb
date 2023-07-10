@@ -17,10 +17,14 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
-    passwords: 'users/passwords'
+    passwords: 'users/passwords',
   }
 
-  get '/current_user', to: 'users/current_user#fetch_current_user' # Move this route outside the devise_scope block
+  devise_scope :user do
+    post '/add_admin', to: 'users/registrations#add_admin'
+  end
+  # Move this route outside the devise_scope block
+  get '/current_user', to: 'users/current_user#fetch_current_user'
 
   resources :accounts
 end

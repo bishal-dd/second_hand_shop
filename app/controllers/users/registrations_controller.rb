@@ -7,6 +7,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     build_resource(sign_up_params)
+    resource.role = :user # Set the role as "user"
+    resource.save
+    render_resources(resource)
+  end
+
+  def add_admin
+    build_resource(sign_up_params)
+    resource.role = :admin # Set the role as "admin"
     resource.save
     render_resources(resource)
   end
