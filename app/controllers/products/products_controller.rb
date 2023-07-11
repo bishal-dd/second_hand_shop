@@ -12,7 +12,7 @@ class Products::ProductsController < ApplicationController
                   .joins(:product_category, :product_size)
                   .select('products.id, products.name, products.price, products.pickup_location, products.status, product_categories.category, product_sizes.size')
 
-    # Filter the products by name if it is provided
+    # Filter tnhe products by name if it is provided
     if name.present?
       @products = @products.where(products: { name: name })
     end
